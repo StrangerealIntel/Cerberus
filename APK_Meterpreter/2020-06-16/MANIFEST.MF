@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Permissions: all-permissions
+
+Name: AndroidManifest.xml
+SHA1-Digest: 3itU7yGLhoixX+A/Tj8qJlKQ8GI=
+
+Name: resources.arsc
+SHA1-Digest: q6tLFZ0Um4o2+Tv1iTgUmlJfTSA=
+
+Name: classes.dex
+SHA1-Digest: ejRLxLlHFFALi4pi9o+8U33L1kk=
+
