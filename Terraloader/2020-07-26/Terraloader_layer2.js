@@ -236,3 +236,10 @@ ArgsArray = [];
 exec(Init(pay2, tabex, offset_tab + l, 50312));
 } 
 catch(e){trhxuhy5686 = '';}
+
+/* values in memory
+
+offset_tab -> 29
+tabex -> 97,118,101,98,71,78,116,82,69,90,112,71,86,101,114,80,89,90,85,98,66,105,81,115,122,110,53,50,52
+
+*/
