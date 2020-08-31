@@ -1,0 +1,11 @@
+Date,Type,Indicator,Description
+2020-08-31,SHA256,2715f7908192529176782670ce2b919ad60ffc9d4ed05d7753b30f56e28bf0ec,"ESSIBE - Informativo.doc.lnk"
+2020-08-31,SHA256,0f99812e12dfb76eb64b35b5b4ae23056c5c97a75c9281c090f08cbc2dc4fb40,"a127843d"
+2020-08-31,URL,"https://bit.ly/2Sk8d2z","URL delivery"
+2020-08-31,URL,"https://trello-attachments.s3.amazonaws.com/5bd221c9b127a862eb07d4e8/5bd221cc08df5852319a5bf2/24faed53b1898c32a584557878e99765/a127843d","URL delivery"
+2020-08-31,IP,"52.216.24.172","IP delivery"
+2020-08-31,Domain,"trello-attachments.s3.amazonaws.com","Domain delivery"
+2020-08-31,URL,"https://bit.ly/3dPRWgc","URL SPAM"
+2020-08-31,URL,"http://0270200200.find4profile.net.pl/index","URL SPAM"
+2020-08-31,IP,"8.209.113.107","IP SPAM"
+2020-08-31,Domain,"0270200200.find4profile.net.pl","Domain SPAM"
